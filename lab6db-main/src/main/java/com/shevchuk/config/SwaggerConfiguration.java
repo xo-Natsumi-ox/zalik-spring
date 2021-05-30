@@ -1,18 +1,7 @@
 package com.shevchuk.config;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-
-import com.google.common.base.Predicates;
-
-import org.springframework.hateoas.client.LinkDiscoverer;
-import org.springframework.hateoas.client.LinkDiscoverers;
-import org.springframework.hateoas.mediatype.collectionjson.CollectionJsonLinkDiscoverer;
-import org.springframework.plugin.core.SimplePluginRegistry;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.service.ApiInfo;
@@ -29,28 +18,20 @@ public class SwaggerConfiguration {
     private static final String description = "Documentation for the project";
 
     private ApiInfo apiInfo() {
-        return new ApiInfoBuilder().title(title)
+        return new ApiInfoBuilder()
+                .title(title)
                 .description(description)
                 .license(LICENSE_TEXT)
                 .version(SWAGGER_API_VERSION)
                 .build();
     }
-
     @Bean
     public Docket decksApi() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .pathMapping("/")
                 .select()
-                .paths(Predicates.not(PathSelectors.regex("/error.*")))
+                .paths(PathSelectors.any())
                 .build();
     }
-    @Bean
-    public LinkDiscoverers discoverers() {
-        List<LinkDiscoverer> plugins = new ArrayList<>();
-        plugins.add(new CollectionJsonLinkDiscoverer());
-        return new LinkDiscoverers(SimplePluginRegistry.create(plugins));
-
-    }
-
 }
